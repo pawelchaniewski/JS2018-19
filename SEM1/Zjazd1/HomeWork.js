@@ -168,3 +168,30 @@ for (let index = 1; index < table.length; index++) {
     console.log(result)
 
 }
+
+
+//
+const table = [5, 6, 2, 0, 7, 8, 1, 5, 2, 6, 1]
+
+function foldTable(array) {
+    let result  = [];
+
+    for (let index = 0; index < array.length; index+=2) {
+        const element1 = array[index];
+        const element2 = array[index+1]
+
+        if (element2 == undefined) {
+            result.push(element1+element1)
+        }
+        
+        console.log(`1st element: ${element1} 2nd element: ${element2}`)
+        result.push(element1+element2)
+        console.log(result)
+        
+
+    }
+    return result;
+    
+}
+
+console.log(foldTable(table))
