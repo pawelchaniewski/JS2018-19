@@ -129,3 +129,42 @@ console.log(average)
 
 // 8) Calculate average value of items at even indexes. Zero is not considered to be even number. [1,6,23,8,4,98,3,7,3,98,4,98]
 // 9) With a given start value of 0. Iterate the array and add even items and subtract odd ones.
+
+
+// Zadanie 10 z drugiego zjazdu
+function getRandomNumber(min, max) {
+    return Math.floor((Math.random() * (max - min + 1)) + min)
+}
+
+function doRandomEquation(a, b) {
+    let rnd = getRandomNumber(1,2)
+    let result = 0;
+
+    switch (rnd) {
+        case 1:
+            console.log('dodawanie')
+            result = a + b
+            break;
+        case 2:
+            console.log('odejmowanie')
+            result = a - b
+            break;
+        default:
+            break;
+    }
+
+    return result
+}
+
+const table = [5, 6, 2, 7, 8, 1, 5, 2, 6]
+let result = table[0]
+
+for (let index = 1; index < table.length; index++) {
+    const element = table[index];
+    
+    console.log('Previous result: ' + result)
+    console.log('Table value: ' + element)
+    result = doRandomEquation(result, element)
+    console.log(result)
+
+}
