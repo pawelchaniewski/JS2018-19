@@ -6,19 +6,20 @@ let obj = (function() {
   let setValue = (value) => _val = value;
   let showValue = function() {
     (_val === undefined) ? console.log('No Variable!') : null;
-    return _val
+    return _val;
   };
   
   let reverseValue = (function() {
     switch (typeof _val) {
       case 'string':
+        // Try: '1234t1337' - no good
         let parsedToInt = parseInt(_val, 10);
         if (isNaN(parsedToInt)) { return [..._val].reverse().join(''); };
         return parsedToInt*(-1);
       case 'number':
         return _val*(-1);
       default:
-        console.log('No Variable! - Cannot reverse!')
+        console.log('No Variable! - Cannot reverse!');
         return _val;
     }
   });
@@ -31,5 +32,5 @@ let obj = (function() {
 })();
 
 obj.setValue('haaalo');
-console.log(obj.showValue())
-console.log(obj.reverseValue())
+console.log(obj.showValue());
+console.log(obj.reverseValue());
