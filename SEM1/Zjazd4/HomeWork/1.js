@@ -1,5 +1,5 @@
 String.prototype.reverse = function() {
-  return [...this].reverse().join();
+  return [...this].reverse().join(""); //remember to set empty separator for join() method!
 };
 
 // This WON'T WORK! (see: iffe and context)
