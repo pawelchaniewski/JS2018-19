@@ -88,7 +88,8 @@ function returnHeavierSet(left, right) {
 
 const firstResult = returnHeavierSet(firstBatch, secondBatch);
 if (firstResult === null) {
-    console.log(returnHeavierSet(thirdBatch[0], thirdBatch[1]));
+    const secondResult = returnHeavierSet(thirdBatch[0], thirdBatch[1]);
+    console.log(secondResult);
 } else {
     const secondResult = returnHeavierSet(firstResult[0], firstResult[1]);
     if (secondResult) {
