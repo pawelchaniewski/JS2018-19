@@ -13,24 +13,54 @@ Strategy:
 
 *********************************** */
 
+// const sudokuMatrix = [
+//     [7, 0, 4, 8, 0, 0, 3, 0, 1],
+//     [8, 2, 0, 5, 0, 0, 0, 4, 0],
+//     [0, 0, 9, 4, 3, 0, 5, 0, 0],
+//     [3, 1, 0, 0, 0, 0, 8, 0, 7],
+//     [0, 8, 0, 0, 0, 0, 0, 1, 0],
+//     [9, 0, 7, 0, 0, 0, 0, 3, 2],
+//     [0, 0, 6, 0, 1, 5, 4, 0, 0],
+//     [0, 7, 0, 0, 0, 9, 0, 6, 5],
+//     [5, 0, 8, 0, 0, 2, 1, 0, 3]
+// ];
+
 const sudokuMatrix = [
-    [7, 0, 4, 8, 0, 0, 3, 0, 1],
-    [8, 2, 0, 5, 0, 0, 0, 4, 0],
-    [0, 0, 9, 4, 3, 0, 5, 0, 0],
-    [3, 1, 0, 0, 0, 0, 8, 0, 7],
-    [0, 8, 0, 0, 0, 0, 0, 1, 0],
-    [9, 0, 7, 0, 0, 0, 0, 3, 2],
-    [0, 0, 6, 0, 1, 5, 4, 0, 0],
-    [0, 7, 0, 0, 0, 9, 0, 6, 5],
-    [5, 0, 8, 0, 0, 2, 1, 0, 3]
+    [0, 0, 4, 0, 0, 0, 0, 6, 7],
+    [3, 0, 0, 4, 7, 0, 0, 0, 5],
+    [1, 5, 0, 8, 2, 0, 0, 0, 3],
+    [0, 0, 6, 0, 0, 0, 0, 3, 1],
+    [8, 0, 2, 1, 0, 5, 6, 0, 4],
+    [4, 1, 0, 0, 0, 0, 9, 0, 0],
+    [7, 0, 0, 0, 8, 0, 0, 4, 6],
+    [6, 0, 0, 0, 1, 2, 0, 0, 0],
+    [9, 3, 0, 0, 0, 0, 7, 1, 0]
 ];
+
+// This sudoku is too hard for this script!
+// const sudokuMatrix = [
+//     [8, 6, 0, 0, 2, 0, 0, 0, 0],
+//     [0, 0, 0, 7, 0, 0, 0, 5, 9],
+//     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+//     [0, 0, 0, 0, 6, 0, 8, 0, 0],
+//     [0, 4, 0, 0, 0, 0, 0, 0, 0],
+//     [0, 0, 5, 3, 0, 0, 0, 0, 7],
+//     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+//     [0, 2, 0, 0, 0, 0, 6, 0, 0],
+//     [0, 0, 7, 5, 0, 9, 0, 0, 0]
+// ];
 
 const sudokuAllAvailableNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const getEmptyCellsInRow = sudokuRow =>
     sudokuRow
-        .map((value, index) => value === 0 && index) // short version of if (value ...) return index
-        .filter(x => x); // to get rid of 'undefined'
+        // Good lesson here: 'and' operand evaluates two sides, and won't return index 0 (falsy)
+        // .map((value, index) => value === 0 && index) // short version of if (value ...) return index
+        .map((value, index) => {
+            if (value === 0) return index;
+        })
+        // Also here - explicitly compare to undefined!
+        .filter(x => x !== undefined); // to get rid of 'undefined'
 
 // Get indexes of all empty cells in each row
 const getEmptyCellsVectors = sudokuMatrix => {
@@ -42,12 +72,6 @@ const getEmptyCellsVectors = sudokuMatrix => {
     );
     return emptyCellsVectors;
 };
-
-// sudokuMatrix.map((row, rowIndex) =>
-//     getEmptyCellsInRow(row).map(
-//         (column, columnIndex) => (rowIndex, columnIndex)
-//     )
-// );
 
 const availableNumbersInRowsMatrix = sudokuMatrix.map(
     row => sudokuAllAvailableNumbers.filter(number => !row.includes(number)) // array [1...9] is constant representing all possible numbers
@@ -96,6 +120,7 @@ const getAvailableNumbersInGrid = (
 
 const getAvailableNumbersInCell = (rowIndex, columnIndex, sudokuMatrix) => {
     const gridPos = ((rowIndex, columnIndex) => {
+        // Removes digits afret decimal (parsed to int - smth like floor)
         const nearestStartRowIndex = Math.trunc(rowIndex / 3) * 3;
         const nearestStartColumnIndex = Math.trunc(columnIndex / 3) * 3;
 
@@ -137,16 +162,32 @@ const getAvailableNumbersInCell = (rowIndex, columnIndex, sudokuMatrix) => {
 console.table(sudokuMatrix);
 const emptyCells = getEmptyCellsVectors(sudokuMatrix);
 
-console.log(
-    emptyCells.forEach(vector => {
+const newSudokuMatrix = [...sudokuMatrix];
+
+while (emptyCells) {
+    let stopFlag = true;
+    for (let index = 0; index < emptyCells.length; index++) {
+        const vector = emptyCells[index];
+
         const [rowIndex, columnIndex] = vector;
         const availableNumbersInCell = getAvailableNumbersInCell(
             rowIndex,
             columnIndex,
-            sudokuMatrix
+            newSudokuMatrix
         );
         console.log(
             `Numers available for cell, row: ${rowIndex} column: ${columnIndex} = ${availableNumbersInCell}`
         );
-    })
-);
+
+        if (availableNumbersInCell.length === 1) {
+            newSudokuMatrix[rowIndex][columnIndex] = availableNumbersInCell[0];
+            emptyCells.splice(index, 1);
+            stopFlag = false;
+        }
+    }
+    if (stopFlag) {
+        console.log(newSudokuMatrix);
+        console.log(`Empty Cells left: ${emptyCells}`);
+        break;
+    }
+}
