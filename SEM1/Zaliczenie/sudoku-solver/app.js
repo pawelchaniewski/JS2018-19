@@ -16,6 +16,7 @@ Strategy:
 const sudokuMatrix = [
     [7, 0, 4, 8, 0, 0, 3, 0, 1],
     [8, 2, 0, 5, 0, 0, 0, 4, 0],
+    [0, 0, 9, 4, 3, 0, 5, 0, 0],
     [3, 1, 0, 0, 0, 0, 8, 0, 7],
     [0, 8, 0, 0, 0, 0, 0, 1, 0],
     [9, 0, 7, 0, 0, 0, 0, 3, 2],
@@ -32,19 +33,32 @@ const getEmptyCellsInRow = sudokuRow =>
         .filter(x => x); // to get rid of 'undefined'
 
 // Get indexes of all empty cells in each row
-const getEmptyCellsMatrix = sudokuMatrix =>
-    sudokuMatrix.map(value => getEmptyCellsInRow(value));
+const getEmptyCellsVectors = sudokuMatrix => {
+    const emptyCellsVectors = [];
+    sudokuMatrix.forEach((row, rowIndex) =>
+        getEmptyCellsInRow(row).map(columnIndex =>
+            emptyCellsVectors.push([rowIndex, columnIndex])
+        )
+    );
+    return emptyCellsVectors;
+};
+
+// sudokuMatrix.map((row, rowIndex) =>
+//     getEmptyCellsInRow(row).map(
+//         (column, columnIndex) => (rowIndex, columnIndex)
+//     )
+// );
 
 const availableNumbersInRowsMatrix = sudokuMatrix.map(
     row => sudokuAllAvailableNumbers.filter(number => !row.includes(number)) // array [1...9] is constant representing all possible numbers
 );
 
-const availableNumbersInRow = (rowIndex, sudokuMatrix) =>
+const getAvailableNumbersInRow = (rowIndex, sudokuMatrix) =>
     sudokuAllAvailableNumbers.filter(
         number => !sudokuMatrix[rowIndex].includes(number)
     );
 
-const availableNumbersInColumn = (columnIndex, sudokuMatrix) =>
+const getAvailableNumbersInColumn = (columnIndex, sudokuMatrix) =>
     sudokuAllAvailableNumbers.filter(
         // as before i filter out from constant all used numbers
         number =>
@@ -57,7 +71,7 @@ const availableNumbersInColumn = (columnIndex, sudokuMatrix) =>
         // so we be left out with those that were not used
     );
 
-const availableNumbersInGrid = (
+const getAvailableNumbersInGrid = (
     startRowIndex,
     endRowIndex,
     startColumnIndex,
@@ -80,66 +94,59 @@ const availableNumbersInGrid = (
                 .includes(number)
     );
 
-const availableNumbersInCell = (rowIndex, columnIndex, sudokuMatrix) => {
+const getAvailableNumbersInCell = (rowIndex, columnIndex, sudokuMatrix) => {
     const gridPos = ((rowIndex, columnIndex) => {
         const nearestStartRowIndex = Math.trunc(rowIndex / 3) * 3;
         const nearestStartColumnIndex = Math.trunc(columnIndex / 3) * 3;
 
         return {
-          startRowIndex: nearestStartRowIndex,
-          endRowIndex: nearestStartRowIndex + 3,
-          startColumnIndex: nearestStartColumnIndex,
-          endColumnIndex: nearestStartColumnIndex + 3
+            startRowIndex: nearestStartRowIndex,
+            endRowIndex: nearestStartRowIndex + 2,
+            startColumnIndex: nearestStartColumnIndex,
+            endColumnIndex: nearestStartColumnIndex + 2
         };
     })(rowIndex, columnIndex);
 
-    const availableNumbersInGrid = availableNumbersInGrid(
+    const availableNumbersInGrid = getAvailableNumbersInGrid(
         gridPos.startRowIndex,
         gridPos.endRowIndex,
         gridPos.startColumnIndex,
         gridPos.endColumnIndex,
         sudokuMatrix
     );
-    
-    const availableNumbersInRow = availableNumbersInRow(
-        rowIndex, sudokuMatrix
+
+    const availableNumbersInRow = getAvailableNumbersInRow(
+        rowIndex,
+        sudokuMatrix
     );
-    
-    const availableNumbersInColumn = availableNumbersInColumn(
-        columnIndex, sudokuMatrix
+
+    const availableNumbersInColumn = getAvailableNumbersInColumn(
+        columnIndex,
+        sudokuMatrix
     );
-    
-    return;
+
+    // console.log(availableNumbersInRow);
+    // console.log(availableNumbersInColumn);
+    // console.log(availableNumbersInGrid);
+
+    return availableNumbersInGrid
+        .filter(number => availableNumbersInRow.includes(number))
+        .filter(number => availableNumbersInColumn.includes(number));
 };
 
-//     console.log(gridPos(4, 5));
+console.table(sudokuMatrix);
+const emptyCells = getEmptyCellsVectors(sudokuMatrix);
 
-// return
-//     availableNumbersInGrid(0, 3, 0, 3, sudokuMatrix)
-//         .filter(number =>
-//             availableNumbersInRow(rowIndex, sudokuMatrix).includes(
-//                 number
-//             )
-//         )
-//         .filter(number =>
-//             availableNumbersInColumn(
-//                 columnIndex,
-//                 sudokuMatrix
-//             ).includes(number)
-//         )
-// );
-// console.log(availableNumbersInRow(rowIndex, sudokuMatrix));
-// console.log(availableNumbersInColumn(columnIndex, sudokuMatrix));
-// }
-// };
-
-console.log(sudokuMatrix);
-console.log(getEmptyCellsMatrix(sudokuMatrix));
-console.log(availableNumbersInRow(0, sudokuMatrix));
-console.log(availableNumbersInColumn(0, sudokuMatrix));
-
-console.log(availableNumbersInCell(1, 3, sudokuMatrix));
-console.log(availableNumbersInCell(1, 4, sudokuMatrix));
-console.log(availableNumbersInCell(1, 6, sudokuMatrix));
-console.log(availableNumbersInCell(4, 3, sudokuMatrix));
-
+console.log(
+    emptyCells.forEach(vector => {
+        const [rowIndex, columnIndex] = vector;
+        const availableNumbersInCell = getAvailableNumbersInCell(
+            rowIndex,
+            columnIndex,
+            sudokuMatrix
+        );
+        console.log(
+            `Numers available for cell, row: ${rowIndex} column: ${columnIndex} = ${availableNumbersInCell}`
+        );
+    })
+);
