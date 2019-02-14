@@ -80,30 +80,37 @@ const availableNumbersInGrid = (
                 .includes(number)
     );
 
-// const availableNumbersInCell = (rowIndex, columnIndex, sudokuMatrix) => {
-//     const gridPos = function(rowIndex, columnIndex) {
-//         if (0 >= rowIndex <= 2 && 0 >= columnIndex <= 2)
-//             return {
-//                 startRowIndex: 0,
-//                 endRowIndex: 2,
-//                 startColumnIndex: 0,
-//                 endColumnIndex: 2
-//             };
-//         if (3 >= rowIndex <= 5 && 3 >= columnIndex <= 5)
-//             return {
-//                 startRowIndex: 3,
-//                 endRowIndex: 5,
-//                 startColumnIndex: 3,
-//                 endColumnIndex: 5
-//             };
-//         if (6 >= rowIndex <= 8 && 6 >= columnIndex <= 8)
-//             return {
-//                 startRowIndex: 6,
-//                 endRowIndex: 8,
-//                 startColumnIndex: 6,
-//                 endColumnIndex: 8
-//             };
-//     };
+const availableNumbersInCell = (rowIndex, columnIndex, sudokuMatrix) => {
+    const gridPos = ((rowIndex, columnIndex) => {
+        const nearestStartRowIndex = Math.trunc(rowIndex / 3) * 3;
+        const nearestStartColumnIndex = Math.trunc(columnIndex / 3) * 3;
+
+        return {
+          startRowIndex: nearestStartRowIndex,
+          endRowIndex: nearestStartRowIndex + 3,
+          startColumnIndex: nearestStartColumnIndex,
+          endColumnIndex: nearestStartColumnIndex + 3
+        };
+    })(rowIndex, columnIndex);
+
+    const availableNumbersInGrid = availableNumbersInGrid(
+        gridPos.startRowIndex,
+        gridPos.endRowIndex,
+        gridPos.startColumnIndex,
+        gridPos.endColumnIndex,
+        sudokuMatrix
+    );
+    
+    const availableNumbersInRow = availableNumbersInRow(
+        rowIndex, sudokuMatrix
+    );
+    
+    const availableNumbersInColumn = availableNumbersInColumn(
+        columnIndex, sudokuMatrix
+    );
+    
+    return;
+};
 
 //     console.log(gridPos(4, 5));
 
@@ -130,3 +137,9 @@ console.log(sudokuMatrix);
 console.log(getEmptyCellsMatrix(sudokuMatrix));
 console.log(availableNumbersInRow(0, sudokuMatrix));
 console.log(availableNumbersInColumn(0, sudokuMatrix));
+
+console.log(availableNumbersInCell(1, 3, sudokuMatrix));
+console.log(availableNumbersInCell(1, 4, sudokuMatrix));
+console.log(availableNumbersInCell(1, 6, sudokuMatrix));
+console.log(availableNumbersInCell(4, 3, sudokuMatrix));
+
