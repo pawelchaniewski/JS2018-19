@@ -4,13 +4,17 @@ Sudoku Solver
 
 Strategy:
 - gather information about all empty cells
-- split table in 9 3x3 matrix tables
-- get available numbers (possible numbers to fill in cells)
-- start with first row
-- iterate first row's empty cells and fill them with possible number (random)
-- before check if it's not a duplicate in column
-- if duplication occurs - try other number and ....
+- iterate through those vectors
+- get all available numbers for this cell (all possible numbers to fill in)
+- start by filling cells with only ONE possible number
+- repeat process until sudoku is solved
 
+This strategy is flawed! When there is no cell with one possible number to fill in
+then it won't fill any, so you end up in endless loop searching for cell that do not exist.
+
+Better solution would be to bruteforce first row (fill in the gaps in the row with random numbers).
+Still, there could be a problem when there are no empty cells in the first row,
+but then, algorithm could possibly check another one and try to fill that one.
 *********************************** */
 
 // const sudokuMatrix = [
