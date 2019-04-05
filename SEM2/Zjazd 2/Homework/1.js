@@ -31,20 +31,23 @@ const MORSE_DICTIONARY = {
 };
 
 function toMorse(text) {
-  const textAsArray = text.split("");
-  const morseAsArray = textAsArray.map(char => MORSE_DICTIONARY[char]);
+  const textAsArray = text.toLowerCase().split("");
+  const morseAsArray = textAsArray.map(char => MORSE_DICTIONARY[char] || "*");
 
   return morseAsArray.join(" ");
 }
 
 function toText(morse) {
   const morseAsArray = morse.split(" ");
-  const textAsArray = morseAsArray.map(char =>
-    Object.keys(MORSE_DICTIONARY).find(key => MORSE_DICTIONARY[key] === char)
+  const textAsArray = morseAsArray.map(
+    char =>
+      Object.keys(MORSE_DICTIONARY).find(
+        key => MORSE_DICTIONARY[key] === char
+      ) || "*"
   );
 
   return textAsArray.join("");
 }
 
-console.log(toMorse("test in the wild"));
-console.log(toText("- . ... - / .. -. / - .... . / .-- .. .-.. -.."));
+console.log(toMorse("Tęst in the wild"));
+console.log(toText(toMorse("Tęst in the wild")));
