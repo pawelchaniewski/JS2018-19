@@ -62,8 +62,9 @@ class Actor {
     this.y = y;
     this.w = w;
     this.h = h;
-    this.vx = w / 10;
-    this.vy = h / 10;
+    this.speed = 10;
+    this.vx = 1;
+    this.vy = 1;
   }
 
   show() {
@@ -72,8 +73,8 @@ class Actor {
   }
 
   move() {
-    this.x += this.vx;
-    this.y += this.vy;
+    this.x += this.vx * this.speed;
+    this.y += this.vy * this.speed;
   }
 
   onCollision() {}
