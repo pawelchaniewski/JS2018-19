@@ -18,6 +18,11 @@ function findCommonCharSequences(left, right) {
   return commonSegments;
 }
 
-const commonCharSequences = findCommonCharSequences("xyy", "xy");
-const longestSequence = commonCharSequences.sort((x, y) => y.length - x.length);
-console.log(longestSequence[0]);
+const commonCharSequences = findCommonCharSequences("xyyaba", "xyxyxyyyabaab");
+const commonCharSequencesSortedByLength = commonCharSequences.sort(
+  (x, y) => y.length - x.length
+);
+console.log(commonCharSequencesSortedByLength);
+
+const longestSequence = commonCharSequencesSortedByLength[0];
+console.log(longestSequence);
