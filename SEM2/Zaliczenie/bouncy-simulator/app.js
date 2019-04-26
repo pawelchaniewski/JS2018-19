@@ -2,7 +2,7 @@
 
 // import { Actor } from "./actor.js";
 
-const board = [
+const board1 = [
   ["X", "X", "X", "X", "X", "X", "X"],
   ["X", "1", "0", "0", "0", "0", "X"],
   ["X", "0", "0", "0", "0", "0", "X"],
@@ -15,8 +15,24 @@ const board = [
   ["X", "X", "X", "X", "X", "X", "X"]
 ];
 
-const BLOCK_HEIGHT = 100;
-const BLOCK_WIDTH = 100;
+const board = [
+  ["X", "X", "X", "X", "X", "X", "X", "X", "X", "X", "X", "X"],
+  ["X", "1", "0", "X", "X", "X", "X", "X", "X", "X", "X", "X"],
+  ["X", "0", "0", "0", "X", "X", "X", "X", "X", "X", "X", "X"],
+  ["X", "0", "0", "0", "0", "X", "X", "X", "X", "X", "X", "X"],
+  ["X", "0", "0", "0", "0", "0", "X", "X", "X", "X", "X", "X"],
+  ["X", "0", "0", "0", "0", "0", "0", "X", "X", "X", "X", "X"],
+  ["X", "0", "0", "0", "0", "0", "0", "0", "X", "X", "X", "X"],
+  ["X", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "X"],
+  ["X", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "X"],
+  ["X", "0", "0", "0", "X", "0", "0", "0", "0", "Y", "0", "X"],
+  ["X", "0", "0", "X", "X", "X", "0", "0", "0", "0", "0", "X"],
+  ["X", "0", "0", "0", "X", "0", "0", "0", "0", "0", "0", "X"],
+  ["X", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "X"],
+  ["X", "0", "0", "Y", "0", "0", "0", "0", "0", "0", "0", "X"],
+  ["X", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "X"],
+  ["X", "X", "X", "X", "X", "X", "X", "X", "X", "X", "X", "X"]
+];
 
 class Block {
   constructor(x, y, w, h, collision = true) {
@@ -46,8 +62,8 @@ class Actor {
     this.y = y;
     this.w = w;
     this.h = h;
-    this.vx = 10;
-    this.vy = 10;
+    this.vx = w / 10;
+    this.vy = h / 10;
   }
 
   show() {
@@ -63,7 +79,7 @@ class Actor {
   onCollision() {}
 }
 
-function boardParser(arrBoard) {
+function boardParser(arrBoard, block_width, block_height) {
   let boardCollection = [];
   arrBoard.map(function(rowValue, rowIndex) {
     const y = rowIndex;
@@ -78,10 +94,10 @@ function boardParser(arrBoard) {
 
       boardCollection.push(
         new Block(
-          x * BLOCK_WIDTH,
-          y * BLOCK_HEIGHT,
-          BLOCK_WIDTH,
-          BLOCK_HEIGHT,
+          x * block_width,
+          y * block_height,
+          block_width,
+          block_height,
           collision
         )
       );
@@ -91,21 +107,28 @@ function boardParser(arrBoard) {
   return boardCollection;
 }
 
-const boardParsed = boardParser(board);
+let boardParsed;
 let actor;
 
 function setup() {
-  const ACTOR_START_POS_X = 100;
-  const ACTOR_START_POS_Y = 100;
+  print(windowWidth, windowHeight);
+  const BLOCK_HEIGHT = Math.floor(windowHeight / board.length);
+  const BLOCK_WIDTH = BLOCK_HEIGHT;
+  const ACTOR_START_POS_X = BLOCK_HEIGHT;
+  const ACTOR_START_POS_Y = BLOCK_WIDTH;
 
-  createCanvas(700, 1000);
+  print(BLOCK_WIDTH, BLOCK_HEIGHT);
+
+  boardParsed = boardParser(board, BLOCK_WIDTH, BLOCK_HEIGHT);
+
+  createCanvas(windowWidth, windowHeight);
   actor = new Actor(
     ACTOR_START_POS_X,
     ACTOR_START_POS_Y,
     BLOCK_WIDTH,
     BLOCK_HEIGHT
   );
-  print(actor.x, actor.y);
+  // print(actor.x, actor.y);
   print(boardParsed);
 }
 
