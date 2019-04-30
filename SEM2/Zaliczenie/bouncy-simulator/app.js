@@ -2,7 +2,7 @@
 
 // import { Actor } from "./actor.js";
 
-const board1 = [
+const board0 = [
   ["X", "X", "X", "X", "X", "X", "X"],
   ["X", "1", "0", "0", "0", "0", "X"],
   ["X", "0", "0", "0", "0", "0", "X"],
@@ -16,6 +16,20 @@ const board1 = [
 ];
 
 const board = [
+  ["X", "X", "X", "X", "X", "X", "X", "X"],
+  ["X", "1", "0", "0", "0", "0", "0", "X"],
+  ["X", "0", "0", "0", "0", "0", "0", "X"],
+  ["X", "0", "0", "0", "0", "0", "0", "X"],
+  ["X", "0", "0", "X", "0", "0", "0", "X"],
+  ["X", "0", "0", "X", "0", "0", "0", "X"],
+  ["X", "0", "0", "0", "0", "0", "0", "X"],
+  ["X", "0", "0", "0", "0", "x", "0", "X"],
+  ["X", "0", "0", "0", "0", "0", "0", "X"],
+  ["X", "0", "0", "0", "0", "0", "0", "X"],
+  ["X", "X", "X", "X", "X", "X", "X", "X"]
+];
+
+const board2 = [
   ["X", "X", "X", "X", "X", "X", "X", "X", "X", "X", "X", "X"],
   ["X", "1", "0", "X", "X", "X", "X", "X", "X", "X", "X", "X"],
   ["X", "0", "0", "0", "X", "X", "X", "X", "X", "X", "X", "X"],
@@ -34,6 +48,27 @@ const board = [
   ["X", "X", "X", "X", "X", "X", "X", "X", "X", "X", "X", "X"]
 ];
 
+const board3 = [
+  ["X", "X", "X", "X", "X", "X", "X", "X", "X", "X", "X", "X"],
+  ["X", "1", "0", "X", "X", "X", "X", "X", "X", "X", "X", "X"],
+  ["X", "0", "0", "0", "X", "X", "X", "X", "X", "X", "X", "X"],
+  ["X", "0", "0", "0", "0", "X", "X", "X", "X", "X", "X", "X"],
+  ["X", "0", "0", "0", "0", "0", "X", "X", "X", "X", "X", "X"],
+  ["X", "0", "0", "0", "0", "0", "0", "X", "X", "X", "X", "X"],
+  ["X", "0", "0", "0", "0", "0", "0", "0", "X", "X", "X", "X"],
+  ["X", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "X"],
+  ["X", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "X"],
+  ["X", "0", "0", "0", "X", "0", "0", "0", "0", "Y", "0", "X"],
+  ["X", "0", "0", "0", "X", "X", "0", "0", "0", "0", "0", "X"],
+  ["X", "0", "0", "0", "X", "0", "0", "0", "0", "0", "0", "X"],
+  ["X", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "X"],
+  ["X", "0", "0", "Y", "0", "0", "0", "0", "0", "0", "0", "X"],
+  ["X", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "X"],
+  ["X", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "X"],
+  ["X", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "X"],
+  ["X", "X", "X", "X", "X", "X", "X", "X", "X", "X", "X", "X"]
+];
+
 class Block {
   constructor(x, y, w, h, collision = true) {
     this.x = x;
@@ -41,37 +76,34 @@ class Block {
     this.w = w;
     this.h = h;
     this.collision = collision;
+    this.touched = false;
+    this.color = this.collision ? 255 : 64;
+  }
+
+  touch() {
+    this.touched = true;
+    this.color -= 30;
   }
 
   show() {
     stroke(64);
-
-    if (this.collision) {
-      fill(255);
-    } else {
-      fill(64);
-    }
-
+    fill(this.color);
     rect(this.x, this.y, this.w, this.h);
+
+    fill(50);
+    text(`${this.x} ${this.y}`, this.x, this.y);
   }
 
   intersects(other) {
+    const distance = dist(this.x, this.y, other.x, other.y);
     if (
-      other.x + other.w > this.x &&
-      other.x < this.x + this.w &&
-      other.y + other.h > this.y &&
-      other.y < this.y + this.h
+      distance <= other.w / 2 + this.w / 2 ||
+      distance <= other.h / 2 + this.h / 2
     ) {
       return true;
     } else {
       return false;
     }
-    // const d = dist(this.x, this.y, other.x, other.y);
-    // if (d < this.h + other.h || d < this.w + other.w) {
-    //   return true;
-    // } else {
-    //   return false;
-    // }
   }
 }
 
@@ -81,7 +113,6 @@ class Actor {
     this.y = y;
     this.w = w;
     this.h = h;
-    this.speed = 10;
     this.vx = 1;
     this.vy = 1;
   }
@@ -89,16 +120,19 @@ class Actor {
   show() {
     stroke(255);
     rect(this.x, this.y, this.w, this.h);
+
+    fill(50);
+    text(`${this.x} ${this.y}`, this.x, this.y);
   }
 
   move() {
-    this.x += this.vx * this.speed;
-    this.y += this.vy * this.speed;
+    this.x += this.w * this.vx;
+    this.y += this.h * this.vy;
   }
 
   reverseVector() {
-    this.vx = this.vx * -1;
-    this.vy = this.vy * -1;
+    this.vx *= -1;
+    this.vy *= -1;
   }
 }
 
@@ -134,41 +168,58 @@ let boardParsed;
 let actor;
 
 function setup() {
-  print(windowWidth, windowHeight);
   const BLOCK_HEIGHT = Math.floor(windowHeight / board.length);
   const BLOCK_WIDTH = BLOCK_HEIGHT;
-  const ACTOR_START_POS_X = BLOCK_HEIGHT * 1.5;
-  const ACTOR_START_POS_Y = BLOCK_WIDTH * 1.5;
+  const ACTOR_START_POS_X = BLOCK_HEIGHT + BLOCK_HEIGHT / 2;
+  const ACTOR_START_POS_Y = BLOCK_WIDTH + BLOCK_WIDTH / 2;
 
+  frameRate(5);
   rectMode(CENTER);
 
-  print(BLOCK_WIDTH, BLOCK_HEIGHT);
-
   boardParsed = boardParser(board, BLOCK_WIDTH, BLOCK_HEIGHT);
-
   createCanvas(windowWidth, windowHeight);
+
   actor = new Actor(
     ACTOR_START_POS_X,
     ACTOR_START_POS_Y,
     BLOCK_WIDTH,
     BLOCK_HEIGHT
   );
-  // print(actor.x, actor.y);
-  print(boardParsed);
 }
 
 function draw() {
   background(0);
+  // First show all objects
   for (let i = 0; i < boardParsed.length; i++) {
     const obj = boardParsed[i];
     obj.show();
+  }
+  actor.show();
+  actor.move();
+
+  // Second check if there is any collision
+  let objTouched = [];
+  for (let i = 0; i < boardParsed.length; i++) {
+    const obj = boardParsed[i];
     if (obj.collision && obj.intersects(actor)) {
       print("Objects collide!");
-      actor.reverseVector();
+      objTouched.push(obj);
+      obj.touch();
     }
+  }
+
+  if (objTouched.length === 1) {
+    const obj = objTouched[0];
+    // Check where is object in relation to actors position (is it below, on the left etc.)
+    if (obj.y === actor.y) {
+      actor.vx *= -1;
+    } else if (obj.x === actor.x) {
+      actor.vy *= -1;
+    }
+  } else if (objTouched.length > 1) {
+    actor.vx *= -1;
+    actor.vy *= -1;
   }
   // actor.x = mouseX;
   // actor.y = mouseY;
-  actor.move();
-  actor.show();
 }
