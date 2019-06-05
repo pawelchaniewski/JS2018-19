@@ -8,6 +8,10 @@ let grid = [
   [0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0]
 ];
 
@@ -32,7 +36,7 @@ function main(grid) {
       }
 
       // on the bottom
-      if (rowIndex + 1 < row.length) {
+      if (rowIndex + 1 < columnLenght) {
         if (grid[rowIndex + 1][columnIndex] === 1) {
           neighbours++;
         }
@@ -46,7 +50,7 @@ function main(grid) {
       }
 
       // on the right
-      if (columnIndex + 1 < grid.length) {
+      if (columnIndex + 1 < row.length) {
         if (grid[rowIndex][columnIndex + 1] === 1) {
           neighbours++;
         }
@@ -60,21 +64,21 @@ function main(grid) {
       }
 
       // on the bottom left
-      if (rowIndex + 1 < row.length && columnIndex - 1 >= 0) {
+      if (rowIndex + 1 < columnLenght && columnIndex - 1 >= 0) {
         if (grid[rowIndex + 1][columnIndex - 1] === 1) {
           neighbours++;
         }
       }
 
       // on the top right
-      if (rowIndex - 1 >= 0 && columnIndex + 1 < grid.length) {
+      if (rowIndex - 1 >= 0 && columnIndex + 1 < row.length) {
         if (grid[rowIndex - 1][columnIndex + 1] === 1) {
           neighbours++;
         }
       }
 
       // on the bottom right
-      if (rowIndex + 1 < row.length && columnIndex + 1 >= 0) {
+      if (rowIndex + 1 < columnLenght && columnIndex + 1 >= 0) {
         if (grid[rowIndex + 1][columnIndex + 1] === 1) {
           neighbours++;
         }
@@ -88,7 +92,7 @@ function main(grid) {
         newCell = 0;
       } else if (neighbours === 3) {
         newCell = 1;
-      } else {
+      } else if (neighbours > 3){
         newCell = 0;
       }
       
@@ -114,4 +118,4 @@ async function run() {
     }
 }
 run();
-
+console.log("1")
