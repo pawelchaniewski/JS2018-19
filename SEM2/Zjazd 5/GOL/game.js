@@ -83,7 +83,7 @@ function main(grid) {
           neighbours++;
         }
       }
-      
+
       if (neighbours < 2) {
         newCell = 0;
       } else if (neighbours === 2 && cell === 1) {
@@ -92,11 +92,11 @@ function main(grid) {
         newCell = 0;
       } else if (neighbours === 3) {
         newCell = 1;
-      } else if (neighbours > 3){
+      } else if (neighbours > 3) {
         newCell = 0;
       }
-      
-    //   newCell = neighbours;
+
+      //   newCell = neighbours;
       newRow.push(newCell);
 
       // console.log(`neightbours ${neighbours}`);
@@ -107,15 +107,15 @@ function main(grid) {
 }
 
 function sleep(ms) {
-    return new Promise(resolve => {
-        setTimeout(resolve, ms)
-    });
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
 }
 async function run() {
-    for (let i = 0; i < 50; ++i) {
-        grid = main(grid);
-        await sleep(100);
-    }
+  for (let i = 0; i < 50; ++i) {
+    grid = main(grid);
+    await sleep(100);
+  }
 }
-run();
-console.log("1")
+
+// run();
